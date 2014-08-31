@@ -1,0 +1,32 @@
+
+Requirements
+<ul>
+	<li><code>sysctl net.netfilter.nf_log.2 = ipt_LOG</code></li>
+	<li>sudoers rules
+		<ul>
+			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables-save ""</code></li>
+			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -F PREROUTING</code></li>
+			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -A PREROUTING * -j TRACE</code></li>
+		</ul>
+		Where <code><i>USER</i></code> is unix user running ajax.php script (eg. www-data for apache)
+	</li>
+	<li>point AJAXURL variable to the right URL in JS code</li>
+	<li>configure <code>$logfile</code> in ajax.php to file iptables logging in (eg. /var/log/kern.log)</li>
+	<li>read access to <code>$logfile</code> for <code><i>USER</i></code></li>
+	<li>do not modify firewall while tracing</li>
+</ul>
+
+Usage
+<ul>
+	<li>Specity filter options in Filter box or leave empty to trace all packets.</li>
+	<li>The programm appends <code>--limit 1/sec</code> to filter options.</li>
+	<li>Press "TRACE!" to start tracing and "Stop" to finish it.</li>
+	<li>The programm polls server every 1.5 sec for new trace results, you can press "Refresh" to poll them manually.</li>
+
+	<li>Messages box: status and error messages from server</li>
+
+	<li>During trace packet IDs will appear in Packets box.
+	Click on a packet ID to display steps in Trace box, which packet met in its way through the firewall.</li>
+	
+	<li>Firewall box: iptables-save output hilighting rules with which the selected packet met.</li>
+</ul>
