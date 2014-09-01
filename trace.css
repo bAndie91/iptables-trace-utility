@@ -1,0 +1,42 @@
+	.filter_option, .filter_custom
+	{
+		background-color: transparent;
+		border: none;
+		border-bottom: 1px solid black;
+		font-family: monospace;
+	}
+	#firewall, .trace_hit, .trace_details
+	{
+		font-family: monospace;
+	}
+	.filter_name
+	{
+		font-style: italic
+	}
+	#packet_list
+	{
+		display: inline;
+		overflow: none;
+	}
+	#packet_list a
+	{
+		margin: 0 3px 0 3px;
+	}
+	#trace_result
+	{
+		overflow-y: auto;
+		white-space: nowrap;
+	}
+	#trace_result table td
+	{
+		vertical-align: top;
+		white-space: nowrap;
+	}
+	.hilight1
+	{
+		background-color: #FFFFB0;
+	}
+	.hilight2
+	{
+		background-color: yellow;
+	}

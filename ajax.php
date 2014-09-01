@@ -1,15 +1,4 @@
 <?php
-/*
-  REQUIREMENTS
-   + sysctl net.netfilter.nf_log.2 = ipt_LOG
-   + sudoers rules
-      + USER ALL=(root) NOPASSWD: /sbin/iptables-save ""
-      + USER ALL=(root) NOPASSWD: /sbin/iptables -t raw -F PREROUTING
-	  + USER ALL=(root) NOPASSWD: /sbin/iptables -t raw -A PREROUTING * -j TRACE
-	  Where USER is unix user running this script (eg. www-data for apache)
-   + read access to $logfile for USER
-   + do not modify firewall while tracing
-*/
  
 $logfile = "/var/log/iptables.log";
 $Response = array();
