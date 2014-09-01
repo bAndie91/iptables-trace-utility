@@ -94,7 +94,23 @@ function htmlize($raw)
 switch($_REQUEST['act'])
 {
 	case "setup":
+		session_start();
+		$_SESSION["pos"] = filesize($logfile);
+		
 		$trace_options = array();
+
+		if(!isset($_REQUEST['filter']['option']['limit']))
+		{
+			$_REQUEST['filter']['option']['limit'] = 1;
+		}
+		if(!isset($_REQUEST['filter']['option']['limit_per']))
+		{
+			$_REQUEST['filter']['option']['limit_per'] = "sec";
+		}
+		$_REQUEST['filter']['option']['limit'] .= "/" . $_REQUEST['filter']['option']['limit_per'];
+		unset($_REQUEST['filter']['option']['limit_per']);
+		$trace_options[] = "-m limit --limit-burst 1";
+		
 		foreach($_REQUEST['filter']['option'] as $opt => $val)
 		{
 			if(!empty($val))
@@ -111,7 +127,7 @@ switch($_REQUEST['act'])
 			}
 		}
 		$trace_options[] = preg_replace('/[^a-z0-9_\.\/! -]/i', '', $_REQUEST['filter']['custom']);
-		$trace_options[] = "-m limit --limit-burst 1 --limit 1/sec -j TRACE";
+		$trace_options[] = "-j TRACE";
 		
 		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) && iptables("raw", "A", "PREROUTING", $trace_options, $stdout);
 		$GLOBALS['text'] .= $ok ? "TRACE installed" : "Error".PHP_EOL.$stdout;

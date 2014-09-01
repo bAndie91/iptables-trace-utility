@@ -1,5 +1,5 @@
 	
-	AJAXURL = 'http://localhost:8080/ajax.php';
+	AJAXURL = 'ajax.php';
 	
 	function starttraceing()
 	{
@@ -47,8 +47,19 @@
 				}
 				for(var pktid in data.packets)
 				{
+					$('#packet_list a[data-pktid='+pktid+']').remove();
+					if(document.packet_data[pktid])
+					{
+						for(var stepid in data.packets[pktid])
+						{
+							document.packet_data[pktid].push(data.packets[pktid][stepid]);
+						}
+					}
+					else
+					{
+							document.packet_data[pktid] = data.packets[pktid];
+					}
 					$('#packet_list').append('<a href="javascript:select_packet(' + pktid + ');" data-pktid=' + pktid + '>' + pktid + '</a> ');
-					document.packet_data[pktid] = data.packets[pktid];
 				}
 			}
 		);
