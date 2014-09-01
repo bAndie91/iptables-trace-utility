@@ -10,9 +10,17 @@ Requirements
 		</ul>
 		Where <code><i>USER</i></code> is unix user running ajax.php script (eg. www-data for apache)
 	</li>
+	<li>backend component:
+		<ul>
+			<li>you need a php-enabled webserver to run ajax.php, or</li>
+			<li>use php 5.4 embeded webserver by invoking this command in folder where you unpacked files:<br/>
+			<code>sudo -u USER php -S localhost:8080 -t .</code></li>
+		</ul>
+	</li>
+	</li>
 	<li>point AJAXURL variable to the right URL in JS code</li>
 	<li>configure <code>$logfile</code> in ajax.php to file iptables logging in (eg. /var/log/kern.log)</li>
-	<li>read access to <code>$logfile</code> for <code><i>USER</i></code></li>
+	<li>read access to <code>$logfile</code> for <code><i>USER</i></code> (eg. <code>chmod +r $logfile</code>)</li>
 	<li>do not modify firewall while tracing</li>
 </ul>
 
