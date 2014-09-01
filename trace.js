@@ -59,7 +59,13 @@
 					{
 							document.packet_data[pktid] = data.packets[pktid];
 					}
-					$('#packet_list').append('<a href="javascript:select_packet(' + pktid + ');" data-pktid=' + pktid + '>' + pktid + '</a> ');
+					
+					var anchor = $('<a href="javascript:select_packet(' + pktid + ');" data-pktid=' + pktid + '>' + pktid + '</a>');
+					anchor.attr('title', document.packet_data[pktid][0].fields.replace(/\s+/g, "<br/>"));
+					anchor.tooltip({show: false, hide: false, track: true});
+					
+					$('#packet_list').append(anchor);
+					$('#packet_list').append(' ');
 				}
 			}
 		);
@@ -92,14 +98,14 @@
 		$('#trace_result').html('');
 	}
 	
-	function scrolltorule(selector_encoded)
+	var scrolltorule = function(event)
 	{
 		$('#firewall > span').each(function()
 		{
 			$(this).removeClass('hilight2');
 		});
 
-		var selector = decodeURI(selector_encoded);
+		var selector = event.data.selector;
 		$('html, body').animate({scrollTop: $(selector).offset().top}, 1000, null, function(){ hilight($(selector), 2); });
 	}
 	
@@ -109,7 +115,7 @@
 		clear_resultbox();
 		
 		var pkt = document.packet_data[pktid];
-		var trace_result_html = '<table>';
+		var trace_result_table = $('<table/>');
 		for(var stepid in pkt)
 		{
 			var step = pkt[stepid];
@@ -124,7 +130,7 @@
 				selector = 'span[table="' + step.table + '"][chain="' + step.chain + '"][rule="' + step.number + '"]';
 				if($(selector).length == 0)
 				{
-					selector = 'span[table="' + step.table + '"][chain="' + step.chain + '"]';
+					selector = 'span[table="' + step.table + '"][chain="' + step.chain + '"]:not([rule])';
 				}
 			}
 			else if(step.level == 'rule')
@@ -132,10 +138,15 @@
 				selector = 'span[table="' + step.table + '"][chain="' + step.chain + '"][rule="' + step.number + '"]';
 			}
 			hilight($(selector));
-			trace_result_html += '<tr><td class="trace_hit"><a href="javascript:scrolltorule(\''+encodeURI(selector)+'\');">'+step.table+':'+step.chain+':'+step.level+':'+step.number+'</a></td><td class="trace_details">'+step.fields+'</td></tr>';
+			var anchor = $('<a href="javascript:;">'+step.table+':'+step.chain+':'+step.level+':'+step.number+'</a>');
+			anchor.click({selector: selector}, scrolltorule);
+			anchor.attr('title', $(selector).text());
+			var row = $('<tr><td class="trace_hit"></td><td class="trace_details">'+step.fields+'</td></tr>');
+			row.find('.trace_hit').append(anchor);
+			trace_result_table.append(row);
 		}
-		trace_result_html += '</table>'
-		$('#trace_result').html(trace_result_html);
+		$('#trace_result').append(trace_result_table);
+		$('#trace_result a').tooltip({show: false, hide: false, delay: 250, track: true});
 	}
 	
 	function stoptraceing()
