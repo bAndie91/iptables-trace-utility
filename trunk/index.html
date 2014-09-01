@@ -3,6 +3,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>iptables TRACE utility</title>
 	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="trace.js"></script>
 	<link rel="stylesheet" href="/static/css/maindesign.css" media="screen" id="cssRef">
 	<link rel="stylesheet" href="trace.css" media="screen" id="cssRef">
@@ -23,7 +24,7 @@
 			<span class="filter_name">proto:</span>&nbsp;<input type=text class="filter_option" name=p length=4 />
 			<span class="filter_name">src port:</span>&nbsp;<input type=text class="filter_option" name=sport length=6 />
 			<span class="filter_name">dst port:</span>&nbsp;<input type=text class="filter_option" name=dport length=6 />
-			<span class="filter_name">limit:</span>&nbsp;<input type=text class="filter_option" name=limit length=3 />&nbsp;/&nbsp;<select class="filter_option" name=limit_per>
+			<span class="filter_name">limit:</span>&nbsp;<input type=text class="filter_option" name=limit length=3 value="1" />&nbsp;/&nbsp;<select class="filter_option" name=limit_per>
 				<option value=sec>sec</option>
 				<option value=min>min</option>
 				<option value=hour>hour</option>

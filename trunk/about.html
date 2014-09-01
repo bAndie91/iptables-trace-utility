@@ -12,15 +12,24 @@ Requirements
 	</li>
 	<li>backend component:
 		<ul>
-			<li>you need a php-enabled webserver to run ajax.php, or</li>
-			<li>use php 5.4 embeded webserver by invoking this command in folder where you unpacked files:<br/>
-			<code>sudo -u USER php -S localhost:8080 -t .</code></li>
+			<li>webserver
+				<ul>
+					<li>you need a php-enabled webserver to run ajax.php, or</li>
+					<li>use php 5.4 embeded webserver by invoking this command in folder where you unpacked files:<br/>
+					<code>sudo -u USER php -S localhost:8080 -t .</code></li>
+				</ul>
+			</li>
+			<li>configure <code>$logfile</code> in ajax.php to file iptables logging in (eg. /var/log/kern.log)</li>
 		</ul>
 	</li>
-	</li>
-	<li>point AJAXURL variable to the right URL in JS code</li>
-	<li>configure <code>$logfile</code> in ajax.php to file iptables logging in (eg. /var/log/kern.log)</li>
 	<li>read access to <code>$logfile</code> for <code><i>USER</i></code> (eg. <code>chmod +r $logfile</code>)</li>
+	<li>frontend component:
+		<ul>
+			<li>point AJAXURL variable to the right URL in JS code</li>
+			<li>jquery.js</li>
+			<li>jquery-ui.js</li>
+		</ul>
+	</li>
 	<li>do not modify firewall while tracing</li>
 </ul>
 
