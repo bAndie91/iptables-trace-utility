@@ -61,8 +61,9 @@
 					}
 					
 					var anchor = $('<a href="javascript:select_packet(' + pktid + ');" data-pktid=' + pktid + '>' + pktid + '</a>');
-					anchor.attr('title', document.packet_data[pktid][0].fields.replace(/\s+/g, "<br/>"));
-					anchor.tooltip({show: false, hide: false, track: true});
+					var title = document.packet_data[pktid][0].fields;
+					anchor.attr('title', title);
+					anchor.tooltip({show: false, hide: false, track: true, tooltipClass: 'mytooltip', content: title.replace(/\s+/g, "<br/>")});
 					
 					$('#packet_list').append(anchor);
 					$('#packet_list').append(' ');
@@ -98,7 +99,7 @@
 		$('#trace_result').html('');
 	}
 	
-	var scrolltorule = function(event)
+	function scrolltorule(event)
 	{
 		$('#firewall > span').each(function()
 		{
@@ -138,6 +139,7 @@
 				selector = 'span[table="' + step.table + '"][chain="' + step.chain + '"][rule="' + step.number + '"]';
 			}
 			hilight($(selector));
+			
 			var anchor = $('<a href="javascript:;">'+step.table+':'+step.chain+':'+step.level+':'+step.number+'</a>');
 			anchor.click({selector: selector}, scrolltorule);
 			anchor.attr('title', $(selector).text());
@@ -146,7 +148,7 @@
 			trace_result_table.append(row);
 		}
 		$('#trace_result').append(trace_result_table);
-		$('#trace_result a').tooltip({show: false, hide: false, delay: 250, track: true});
+		$('#trace_result a').tooltip({show: false, hide: false, delay: 250, track: true, tooltipClass: 'mytooltip'});
 	}
 	
 	function stoptraceing()
