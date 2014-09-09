@@ -4,7 +4,7 @@ $logfile = "/var/log/iptables.log";
 $Response = array();
 $GLOBALS['text'] = '';
 
-function iptables($table, $action, $chain, $options = array(), &$stdout = array())
+function iptables($table, $action, $chain, $options = array(), &$stdout = '')
 {
 	$cmd = "sudo iptables ";
 	$cmd .= "-t $table ";
@@ -22,7 +22,8 @@ function iptables($table, $action, $chain, $options = array(), &$stdout = array(
 	{
 		$GLOBALS['text'] .= print_r($cmd, true).PHP_EOL;
 	}
-	exec($cmd, $stdout, $code);
+	exec($cmd, $stdout_array, $code);
+	$stdout = implode(PHP_EOL, $stdout_array);
 	if(@$_REQUEST["debug"])
 	{
 		$GLOBALS['text'] .= print_r($stdout, true);
@@ -96,41 +97,63 @@ switch($_REQUEST['act'])
 	case "setup":
 		session_start();
 		$_SESSION["pos"] = filesize($logfile);
-		
-		$trace_options = array();
 
-		if(!isset($_REQUEST['filter']['option']['limit']))
-		{
-			$_REQUEST['filter']['option']['limit'] = 1;
-		}
-		if(!isset($_REQUEST['filter']['option']['limit_per']))
-		{
-			$_REQUEST['filter']['option']['limit_per'] = "sec";
-		}
-		$_REQUEST['filter']['option']['limit'] .= "/" . $_REQUEST['filter']['option']['limit_per'];
-		unset($_REQUEST['filter']['option']['limit_per']);
-		$trace_options[] = "-m limit --limit-burst 1";
+		$trace_options = array();
 		
-		foreach($_REQUEST['filter']['option'] as $opt => $val)
+		foreach($_REQUEST['filters'] as $rule_num => $rule)
 		{
-			if(!empty($val))
+			$trace_options[$rule_num] = array();
+			
+			if(empty($rule['option']['limit']))
 			{
-				if(strlen($opt) == 1)
+				$rule['option']['limit'] = 1;
+			}
+			if(empty($rule['option']['limit_per']))
+			{
+				$rule['option']['limit_per'] = "sec";
+			}
+			$rule['option']['limit'] .= "/" . $rule['option']['limit_per'];
+			unset($rule['option']['limit_per']);
+			$trace_options[$rule_num][] = "-m limit --limit-burst 1";
+			
+			foreach($rule['option'] as $opt => $val)
+			{
+				if(!empty($val))
 				{
-					$trace_options[] = "-".escapeshellarg($opt);
+					if(strlen($opt) == 1)
+					{
+						$trace_options[$rule_num][] = "-".escapeshellarg($opt);
+					}
+					else
+					{
+						$trace_options[$rule_num][] = "--".escapeshellarg($opt);
+					}
+					$trace_options[$rule_num][] = escapeshellarg($val);
 				}
-				else
+			}
+
+			$trace_options[$rule_num][] = preg_replace('/[^a-z0-9_\.\/! -]/i', '', $rule['custom']);
+			$trace_options[$rule_num][] = "-j TRACE";
+		}
+
+		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout);
+		if($ok)
+		{
+			foreach($trace_options as $rule)
+			{
+				$ok = iptables("raw", "A", "PREROUTING", $rule, $stdout);
+				if(!$ok)
 				{
-					$trace_options[] = "--".escapeshellarg($opt);
+					$GLOBALS['text'] .= PHP_EOL.$stdout;
+					iptables("raw", "F", "PREROUTING", array(), $stdout);
+					break;
 				}
-				$trace_options[] = escapeshellarg($val);
 			}
 		}
-		$trace_options[] = preg_replace('/[^a-z0-9_\.\/! -]/i', '', $_REQUEST['filter']['custom']);
-		$trace_options[] = "-j TRACE";
-		
-		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) && iptables("raw", "A", "PREROUTING", $trace_options, $stdout);
-		$GLOBALS['text'] .= $ok ? "TRACE installed" : "Error".PHP_EOL.$stdout;
+		else
+		{
+			$GLOBALS['text'] .= "Error".PHP_EOL.$stdout;
+		}
 		
 		$Response = array(
 			"firewall" => array(

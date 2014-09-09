@@ -1,24 +1,28 @@
 	
-	AJAXURL = 'ajax.php';
-	
 	function starttraceing()
 	{
 		$('#firewall').html('');
 		clear_packetlist();
 		clear_resultbox();
 
-		var filter = {option:{}, custom:{}};
-		$('.filter_option').each(function()
+		var filters = [];
+		$('.filter_div').each(function()
 		{
-			filter.option[this.name] = this.value;
+			var filter = {option:{}, custom:{}};
+			$(this).find('.filter_option').each(function()
+			{
+				filter.option[this.name] = this.value;
+			});
+			filter.custom = $(this).find('.filter_custom').val();
+			
+			filters.push(filter);
 		});
-		filter.custom = $('.filter_custom').val();
 		
 		$.post(
 			AJAXURL,
 			{
 				act: 'setup',
-				filter: filter,
+				filters: filters,
 				debug: $('#chkb_debug').attr('checked') ? 1 : 0,
 			},
 			function(data, textStatus, xhr)
@@ -63,7 +67,8 @@
 					var anchor = $('<a href="javascript:select_packet(' + pktid + ');" data-pktid=' + pktid + '>' + pktid + '</a>');
 					var title = document.packet_data[pktid][0].fields;
 					anchor.attr('title', title);
-					anchor.tooltip({show: false, hide: false, track: true, tooltipClass: 'mytooltip', content: title.replace(/\s+/g, "<br/>")});
+					anchor.tooltip(document.ui_tooltip_defaults);
+					anchor.tooltip({content: title.replace(/\s+/g, "<br/>")});
 					
 					$('#packet_list').append(anchor);
 					$('#packet_list').append(' ');
@@ -148,7 +153,8 @@
 			trace_result_table.append(row);
 		}
 		$('#trace_result').append(trace_result_table);
-		$('#trace_result a').tooltip({show: false, hide: false, delay: 250, track: true, tooltipClass: 'mytooltip'});
+		$('#trace_result a').tooltip(document.ui_tooltip_defaults);
+		$('#trace_result a').tooltip({delay: 250});
 	}
 	
 	function stoptraceing()
@@ -166,10 +172,38 @@
 			'json'
 		);
 	}
+
+	function addfilterdiv()
+	{
+		var lastfilterdiv = $('.filter_div').last();
+		var newdiv = lastfilterdiv.clone();
+		var filterdiv_num = $('.filter_div').length + 1;
+		newdiv.attr('filterdiv_num', filterdiv_num);
+		newdiv.find('.delfilterdiv').remove();
+		newdiv.append('<input type=button value="&ndash;" class="delfilterdiv" onClick="delfilterdiv(' + filterdiv_num + ');" />');
+		lastfilterdiv.parent().append(newdiv);
+	}
+
+	function delfilterdiv(filterdiv_num)
+	{
+		$('.filter_div[filterdiv_num=' + filterdiv_num + ']').remove();
+	}
 	
 	$(document).ready(function()
 	{
 		document.packet_data = {};
+		
+		document.ui_tooltip_defaults = {
+			show: false, 
+			hide: false, 
+			track: true, 
+			tooltipClass: "mytooltip", 
+			position: {
+				my: "left+15 center", 
+				at: "right center", 
+				offset: "flipfit flipfit"
+			},
+		};
 		
 		$('input[length].filter_option, input[length].filter_custom').each(function()
 		{
