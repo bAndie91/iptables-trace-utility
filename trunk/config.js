@@ -1,1 +1,1 @@
-	AJAXURL = '/cgi-bin/sysinfo/iptables/ajax.php';
+	AJAXURL = 'ajax.php';
