@@ -144,15 +144,16 @@ switch($_REQUEST['act'])
 				$ok = iptables("raw", "A", "PREROUTING", $rule, $stdout);
 				if(!$ok)
 				{
-					$GLOBALS['text'] .= PHP_EOL.$stdout;
+					$GLOBALS['text'] .= $stdout.PHP_EOL;
 					iptables("raw", "F", "PREROUTING", array(), $stdout);
 					break;
 				}
 			}
+			$GLOBALS['text'] .= "TRACE installed".PHP_EOL;
 		}
 		else
 		{
-			$GLOBALS['text'] .= "Error".PHP_EOL.$stdout;
+			$GLOBALS['text'] .= "Error".PHP_EOL.$stdout.PHP_EOL;
 		}
 		
 		$Response = array(
@@ -165,7 +166,7 @@ switch($_REQUEST['act'])
 
 	case "stop":
 		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout);
-		$GLOBALS['text'] .= $ok ? "TRACE removed" : "Error".PHP_EOL.$stdout;
+		$GLOBALS['text'] .= $ok ? "TRACE removed" : "Error".PHP_EOL.$stdout.PHP_EOL;
 	break;
 	
 	case "poll":
@@ -206,7 +207,7 @@ switch($_REQUEST['act'])
 		}
 		else
 		{
-			$GLOBALS['text'] .= "Can not open: $logfile";
+			$GLOBALS['text'] .= "Can not open: $logfile".PHP_EOL;
 		}
 		
 		$Response = array(
