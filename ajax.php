@@ -99,7 +99,7 @@ switch($_REQUEST['act'])
 		$_SESSION["pos"] = filesize($logfile);
 
 		$trace_options = array();
-		$trace_chains = array()
+		$trace_chains = array();
 		
 		foreach($_REQUEST['filters'] as $rule_num => $rule)
 		{
