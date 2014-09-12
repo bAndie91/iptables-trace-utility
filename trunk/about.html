@@ -5,8 +5,8 @@ Requirements
 	<li>sudoers rules
 		<ul>
 			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables-save ""</code></li>
-			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -F PREROUTING</code></li>
-			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -A PREROUTING * -j TRACE</code></li>
+			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -F *</code></li>
+			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -A * -j TRACE</code></li>
 		</ul>
 		Where <code><i>USER</i></code> is unix user running ajax.php script (eg. www-data for apache)
 	</li>

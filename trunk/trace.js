@@ -116,7 +116,18 @@
 		});
 
 		var selector = event.data.selector;
-		$('html, body').animate({scrollTop: $(selector).offset().top}, 1000, null, function(){ hilight($(selector), 2); });
+		$('#firewall').slideDown(
+			400,
+			function() {
+				$('html, body').animate(
+					{ scrollTop: $(selector).offset().top }, 
+					1000, 
+					null, 
+					function() {
+						hilight($(selector), 2);
+					}
+				);
+			});
 	}
 	
 	function select_packet(pktid)
@@ -159,6 +170,7 @@
 		$('#trace_result').append(trace_result_table);
 		$('#trace_result a').tooltip(document.ui_tooltip_defaults);
 		$('#trace_result a').tooltip({delay: 250});
+		$('#trace_result').slideDown();
 	}
 	
 	function stoptraceing()
@@ -218,5 +230,9 @@
 		$('input[length].filter_option, input[length].filter_custom').each(function()
 		{
 			this.style.width = $(this).attr('length') * 8;
+		});
+		
+		$('legend').click(function() {
+			$(this).siblings().slideToggle("slow");
 		});
 	});
