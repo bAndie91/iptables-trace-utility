@@ -14,6 +14,10 @@
 				filter.option[this.name] = this.value;
 			});
 			filter.custom = $(this).find('.filter_custom').val();
+			filter.direction = {
+				'in':  $(this).find('[name=direction_in]').checked()  ? 1 : 0,
+				'out': $(this).find('[name=direction_out]').checked() ? 1 : 0,
+			};
 			
 			filters.push(filter);
 		});
@@ -179,6 +183,12 @@
 		var newdiv = lastfilterdiv.clone();
 		var filterdiv_num = $('.filter_div').length + 1;
 		newdiv.attr('filterdiv_num', filterdiv_num);
+		newdiv.find('.filter_direction').each(function()
+		{
+			var attr = $(this).is('label') ? 'for' : 'id';
+			var m = $(this).attr(attr).match(/^(.*_)([0-9]+)$/);
+			$(this).attr(attr, m[1] + filterdiv_num);
+		});
 		newdiv.find('.delfilterdiv').remove();
 		newdiv.append('<input type=button value="&ndash;" class="delfilterdiv" onClick="delfilterdiv(' + filterdiv_num + ');" />');
 		lastfilterdiv.parent().append(newdiv);
