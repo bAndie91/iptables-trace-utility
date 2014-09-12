@@ -15,8 +15,8 @@
 			});
 			filter.custom = $(this).find('.filter_custom').val();
 			filter.direction = {
-				'in':  $(this).find('[name=direction_in]').checked()  ? 1 : 0,
-				'out': $(this).find('[name=direction_out]').checked() ? 1 : 0,
+				'in':  $(this).find('[name=direction_in]').attr('checked')  ? 1 : 0,
+				'out': $(this).find('[name=direction_out]').attr('checked') ? 1 : 0,
 			};
 			
 			filters.push(filter);
