@@ -99,6 +99,7 @@ switch($_REQUEST['act'])
 		$_SESSION["pos"] = filesize($logfile);
 
 		$trace_options = array();
+		$trace_chains = array()
 		
 		foreach($_REQUEST['filters'] as $rule_num => $rule)
 		{
@@ -134,22 +135,32 @@ switch($_REQUEST['act'])
 
 			$trace_options[$rule_num][] = preg_replace('/[^a-z0-9_\.\/! -]/i', '', $rule['custom']);
 			$trace_options[$rule_num][] = "-j TRACE";
+			
+			if($rule['direction']['in'] == "1")  $trace_chains[$rule_num][] = 'PREROUTING';
+			if($rule['direction']['out'] == "1") $trace_chains[$rule_num][] = 'OUTPUT';
 		}
 
-		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout);
+		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) and iptables("raw", "F", "OUTPUT", array(), $stdout);
 		if($ok)
 		{
-			foreach($trace_options as $rule)
+			foreach($trace_options as $rule_num => $rule)
 			{
-				$ok = iptables("raw", "A", "PREROUTING", $rule, $stdout);
-				if(!$ok)
+				foreach($trace_chains[$rule_num] as $chain)
 				{
-					$GLOBALS['text'] .= $stdout.PHP_EOL;
-					iptables("raw", "F", "PREROUTING", array(), $stdout);
-					break;
+					$ok = iptables("raw", "A", $chain, $rule, $stdout);
+					if(!$ok)
+					{
+						$GLOBALS['text'] .= $stdout.PHP_EOL;
+						iptables("raw", "F", "PREROUTING", array(), $stdout);
+						iptables("raw", "F", "OUTPUT", array(), $stdout);
+						break;
+					}
 				}
 			}
-			$GLOBALS['text'] .= "TRACE installed".PHP_EOL;
+			if($ok)
+			{
+				$GLOBALS['text'] .= "TRACE installed".PHP_EOL;
+			}
 		}
 		else
 		{
