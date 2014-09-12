@@ -2,11 +2,10 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>iptables TRACE utility</title>
-	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
 	<script type="text/javascript" src="/static/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="config.js"></script>
 	<script type="text/javascript" src="trace.js"></script>
-	<link rel="stylesheet" href="/static/css/maindesign.css" media="screen" id="cssRef">
 	<link rel="stylesheet" href="trace.css" media="screen" id="cssRef">
 </head>
 <body>
@@ -20,30 +19,32 @@
 
 		<fieldset>
 			<legend>Filter</legend>
-			<div class="filter_div_container">
-				<div class="filter_div">
-					<span class="filter_name">src ip:</span>&nbsp;<input type=text class="filter_option" name=s length=16 />
-					<span class="filter_name">dst ip:</span>&nbsp;<input type=text class="filter_option" name=d length=16 />
-					<span class="filter_name">proto:</span>&nbsp;<input type=text class="filter_option" name=p length=4 />
-					<span class="filter_name">src port:</span>&nbsp;<input type=text class="filter_option" name=sport length=6 />
-					<span class="filter_name">dst port:</span>&nbsp;<input type=text class="filter_option" name=dport length=6 />
-					<span class="filter_name">limit:</span>&nbsp;<input type=text class="filter_option" name=limit length=3 value="1" />&nbsp;/&nbsp;<select class="filter_option" name=limit_per>
-						<option value=sec>sec</option>
-						<option value=min>min</option>
-						<option value=hour>hour</option>
-					</select>
-					<small class="filter_name">custom&nbsp;options:</small>&nbsp;<input type=text class="filter_custom" name=custom length=50 />
-					<input type=checkbox id=filter_direction_in_1 class="filter_direction" name="direction_in" checked=checked />
-						<label for="filter_direction_in_1" class="filter_direction"><small class="filter_name">IN</small></label>
-					<input type=checkbox id=filter_direction_out_1 class="filter_direction" name="direction_out" />
-						<label for="filter_direction_out_1" class="filter_direction"><small class="filter_name">OUT</small></label>
+			<div class="content">
+				<div class="filter_div_container">
+					<div class="filter_div">
+						<span class="filter_name">src ip:</span>&nbsp;<input type=text class="filter_option" name=s length=16 />
+						<span class="filter_name">dst ip:</span>&nbsp;<input type=text class="filter_option" name=d length=16 />
+						<span class="filter_name">proto:</span>&nbsp;<input type=text class="filter_option" name=p length=4 />
+						<span class="filter_name">src port:</span>&nbsp;<input type=text class="filter_option" name=sport length=6 />
+						<span class="filter_name">dst port:</span>&nbsp;<input type=text class="filter_option" name=dport length=6 />
+						<span class="filter_name">limit:</span>&nbsp;<input type=text class="filter_option" name=limit length=3 value="1" />&nbsp;/&nbsp;<select class="filter_option" name=limit_per>
+							<option value=sec>sec</option>
+							<option value=min>min</option>
+							<option value=hour>hour</option>
+						</select>
+						<small class="filter_name">custom&nbsp;options:</small>&nbsp;<input type=text class="filter_custom" name=custom length=50 />
+						<input type=checkbox id=filter_direction_in_1 class="filter_direction" name="direction_in" checked=checked />
+							<label for="filter_direction_in_1" class="filter_direction"><small class="filter_name">IN</small></label>
+						<input type=checkbox id=filter_direction_out_1 class="filter_direction" name="direction_out" />
+							<label for="filter_direction_out_1" class="filter_direction"><small class="filter_name">OUT</small></label>
+					</div>
 				</div>
+				<input type=button value="+" onClick="addfilterdiv();" />
+				<input type=button value="TRACE!" onClick="starttraceing();" />
+				<input type=checkbox id=chkb_debug /><label for=chkb_debug>debug</label>
+				<input type=button value="Refresh" onClick="refresh();" />
+				<input type=button value="Stop" onClick="stoptraceing();" />
 			</div>
-			<input type=button value="+" onClick="addfilterdiv();" />
-			<input type=button value="TRACE!" onClick="starttraceing();" />
-			<input type=checkbox id=chkb_debug /><label for=chkb_debug>debug</label>
-			<input type=button value="Refresh" onClick="refresh();" />
-			<input type=button value="Stop" onClick="stoptraceing();" />
 		</fieldset>
 
 		<fieldset>
