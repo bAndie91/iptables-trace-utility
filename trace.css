@@ -5,9 +5,13 @@
 		border-bottom: 1px solid black;
 		font-family: monospace;
 	}
-	#firewall, .trace_hit, .trace_details
+	#firewall, .trace_step, .trace_details
 	{
 		font-family: monospace;
+	}
+	.trace_step
+	{
+		font-size: small;
 	}
 	.filter_name
 	{
@@ -28,6 +32,12 @@
 		vertical-align: top;
 		white-space: nowrap;
 	}
+	
+	#packet_list a.hilit
+	{
+		background-color: yellow;
+	}
+	
 	.hilight1
 	{
 		background-color: #FFFFB0;

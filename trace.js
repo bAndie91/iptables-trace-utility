@@ -133,8 +133,9 @@
 	function select_packet(pktid)
 	{
 		clear_hilights();
-		clear_resultbox();
-		
+		$('#packet_list a').removeClass('hilit');
+		$('#packet_list a[data-pktid='+pktid+']').addClass('hilit');
+
 		var pkt = document.packet_data[pktid];
 		var trace_result_table = $('<table/>');
 		for(var stepid in pkt)
@@ -160,17 +161,33 @@
 			}
 			hilight($(selector));
 			
-			var anchor = $('<a href="javascript:;">'+step.table+':'+step.chain+':'+step.level+':'+step.number+'</a>');
+			var hit_text = step.table+':'+step.chain+':'+step.level+':'+step.number;
+			var rule_text = $(selector).text();
+			var hit_span = $('<span class="trace_hit">'+hit_text+'</span>');
+			var rule_span = $('<span class="trace_rule">'+rule_text+'</span>');
+			hit_span.attr('title', rule_text);
+			rule_span.attr('title', hit_text);
+			if($('#trace_result .trace_rule').is(':visible')) hit_span.hide();
+			else rule_span.hide();
+			var anchor = $('<a href="javascript:;"></a>');
 			anchor.click({selector: selector}, scrolltorule);
-			anchor.attr('title', $(selector).text());
-			var row = $('<tr><td class="trace_hit"></td><td class="trace_details">'+step.fields+'</td></tr>');
-			row.find('.trace_hit').append(anchor);
+			anchor.append(hit_span);
+			anchor.append(rule_span);
+			var row = $('<tr><td class="trace_step"></td></td><td class="trace_details">'+step.fields+'</td></tr>');
+			row.find('.trace_step').append(anchor);
 			trace_result_table.append(row);
 		}
+		clear_resultbox();
 		$('#trace_result').append(trace_result_table);
-		$('#trace_result a').tooltip(document.ui_tooltip_defaults);
-		$('#trace_result a').tooltip({delay: 250});
+		$('#trace_result a span').tooltip(document.ui_tooltip_defaults);
+		$('#trace_result a span').tooltip({delay: 250});
 		$('#trace_result').slideDown();
+	}
+	
+	function switch_trace_hit_rule()
+	{
+		$('#trace_result .trace_hit').toggle();
+		$('#trace_result .trace_rule').toggle();
 	}
 	
 	function stoptraceing()
@@ -232,7 +249,7 @@
 			this.style.width = $(this).attr('length') * 8;
 		});
 		
-		$('legend').click(function() {
-			$(this).siblings().slideToggle("slow");
+		$('legend > span').click(function() {
+			$(this).parent().siblings().slideToggle("slow");
 		});
 	});
