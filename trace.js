@@ -252,4 +252,25 @@
 		$('legend > span').click(function() {
 			$(this).parent().siblings().slideToggle("slow");
 		});
+		
+		/* setup packet pager */
+		$('body').keypress(function(event)
+		{
+			var obj = $('#packet_list a.hilit');
+			if(event.keyCode == 110 /* [N] */)
+			{
+				obj = obj.next();
+				if(!obj.length) obj = $('#packet_list a:first');
+			}
+			else if(event.keyCode == 112 /* [P] */)
+			{
+				obj = obj.prev();
+				if(!obj.length) obj = $('#packet_list a:last');
+			}
+			else
+			{
+				return;
+			}
+			select_packet( obj.data('pktid') );
+		});
 	});
