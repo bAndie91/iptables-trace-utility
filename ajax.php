@@ -140,7 +140,7 @@ switch($_REQUEST['act'])
 			if($rule['direction']['out'] == "1") $trace_chains[$rule_num][] = 'OUTPUT';
 		}
 
-		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) and iptables("raw", "F", "OUTPUT", array(), $stdout);
+		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) && iptables("raw", "F", "OUTPUT", array(), $stdout);
 		if($ok)
 		{
 			foreach($trace_options as $rule_num => $rule)
@@ -176,7 +176,7 @@ switch($_REQUEST['act'])
 	break;
 
 	case "stop":
-		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout);
+		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) && iptables("raw", "F", "OUTPUT", array(), $stdout);
 		$GLOBALS['text'] .= $ok ? "TRACE removed" : "Error".PHP_EOL.$stdout.PHP_EOL;
 	break;
 	
