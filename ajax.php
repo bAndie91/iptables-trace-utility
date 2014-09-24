@@ -6,7 +6,7 @@ $GLOBALS['text'] = '';
 
 function iptables($table, $action, $chain, $options = array(), &$stdout = '')
 {
-	$cmd = "sudo iptables ";
+	$cmd = "sudo /sbin/iptables ";
 	$cmd .= "-t $table ";
 	$cmd .= "-$action ";
 	$cmd .= "$chain ";
@@ -33,7 +33,7 @@ function iptables($table, $action, $chain, $options = array(), &$stdout = '')
 
 function iptables_save()
 {
-	$cmd = "sudo iptables-save";
+	$cmd = "sudo /sbin/iptables-save";
 	exec($cmd, $stdout, $code);
 	if($code == 0)
 	{

@@ -19,7 +19,18 @@ Requirements
 					<code>sudo -u USER php -S localhost:8080 -t .</code></li>
 				</ul>
 			</li>
-			<li>configure <code>$logfile</code> in ajax.php to file iptables logging in (eg. /var/log/kern.log)</li>
+			<li>configure <code>$logfile</code> in ajax.php to point to file iptables is logging in (eg. /var/log/kern.log)</li>
+				<ul>
+					<li>you can setup rsyslog to separate iptables' log messages:<br/>
+					<code>
+					<pre>:msg, regex, "^\[[ ]*[0-9]*\.[0-9]*\] Firewall: "  -/var/log/iptables.log
+& ~
+:msg, regex, "^\[[ ]*[0-9]*\.[0-9]*\] TRACE: "     -/var/log/iptables.log
+& ~
+</pre>
+					</code>
+					</li>
+				</ul>
 		</ul>
 	</li>
 	<li>read access to <code>$logfile</code> for <code><i>USER</i></code> (eg. <code>chmod +r $logfile</code>)</li>
@@ -36,7 +47,7 @@ Requirements
 Usage
 <ul>
 	<li>Specity filter options in Filter box or leave empty to trace all packets.</li>
-	<li>The programm appends <code>--limit 1/sec</code> to filter options.</li>
+	<li>Pay attention to <i>limit</i> parameter, too high limit may lead to high load on target system!</li>
 	<li>Press "TRACE!" to start tracing and "Stop" to finish it.</li>
 	<li>The programm polls server every 1.5 sec for new trace results, you can press "Refresh" to poll them manually.</li>
 
