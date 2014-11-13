@@ -6,7 +6,7 @@ $GLOBALS['text'] = '';
 
 function iptables($table, $action, $chain, $options = array(), &$stdout = '')
 {
-	$cmd = "sudo /sbin/iptables ";
+	$cmd = "sudo iptables ";
 	$cmd .= "-t $table ";
 	$cmd .= "-$action ";
 	$cmd .= "$chain ";
@@ -31,9 +31,31 @@ function iptables($table, $action, $chain, $options = array(), &$stdout = '')
 	return $code == 0;
 }
 
+function which($cmd)
+{
+	foreach(explode(':', getenv('PATH')) as $path)
+	{
+		if(is_executable("$path/$cmd")) return true;
+	}
+	return false;
+}
+
+function run($cmd)
+{
+	exec("$cmd 2>&1", $stdout_array, $code);
+	if($code != 0)
+	{
+		return $code;
+	}
+	else
+	{
+		return implode(PHP_EOL, $stdout_array);
+	}
+}
+
 function iptables_save()
 {
-	$cmd = "sudo /sbin/iptables-save";
+	$cmd = "sudo iptables-save";
 	exec($cmd, $stdout, $code);
 	if($code == 0)
 	{
@@ -140,39 +162,55 @@ switch($_REQUEST['act'])
 			if($rule['direction']['out'] == "1") $trace_chains[$rule_num][] = 'OUTPUT';
 		}
 
-		$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) && iptables("raw", "F", "OUTPUT", array(), $stdout);
-		if($ok)
+
+		$sysctl_cmd = "sysctl";
+		$code = 0;
+		if(!which("sysctl")) $sysctl_cmd = "/sbin/sysctl";
+		if(run("$sysctl_cmd -n net.netfilter.nf_log.2") !== "ipt_LOG")
 		{
-			foreach($trace_options as $rule_num => $rule)
-			{
-				foreach($trace_chains[$rule_num] as $chain)
-				{
-					$ok = iptables("raw", "A", $chain, $rule, $stdout);
-					if(!$ok)
-					{
-						$GLOBALS['text'] .= $stdout.PHP_EOL;
-						iptables("raw", "F", "PREROUTING", array(), $stdout);
-						iptables("raw", "F", "OUTPUT", array(), $stdout);
-						break;
-					}
-				}
-			}
+			exec("sudo $sysctl_cmd net.netfilter.nf_log.2=ipt_LOG 2>&1", $stdout_array, $code);
+		}
+		if($code == 0)
+		{
+			$ok = iptables("raw", "F", "PREROUTING", array(), $stdout) && iptables("raw", "F", "OUTPUT", array(), $stdout);
 			if($ok)
 			{
-				$GLOBALS['text'] .= "TRACE installed".PHP_EOL;
+				foreach($trace_options as $rule_num => $rule)
+				{
+					foreach($trace_chains[$rule_num] as $chain)
+					{
+						$ok = iptables("raw", "A", $chain, $rule, $stdout);
+						if(!$ok)
+						{
+							$GLOBALS['text'] .= $stdout.PHP_EOL;
+							iptables("raw", "F", "PREROUTING", array(), $stdout);
+							iptables("raw", "F", "OUTPUT", array(), $stdout);
+							break;
+						}
+					}
+				}
+				if($ok)
+				{
+					$GLOBALS['text'] .= "TRACE installed".PHP_EOL;
+				}
 			}
+			else
+			{
+				$GLOBALS['text'] .= "Error".PHP_EOL.$stdout.PHP_EOL;
+			}
+			
+			$Response = array(
+				"firewall" => array(
+					"raw" => iptables_save(),
+				),
+			);
+			$Response["firewall"]["html"] = htmlize($Response["firewall"]["raw"]);
 		}
 		else
 		{
+			$stdout = implode(PHP_EOL, $stdout_array);
 			$GLOBALS['text'] .= "Error".PHP_EOL.$stdout.PHP_EOL;
 		}
-		
-		$Response = array(
-			"firewall" => array(
-				"raw" => iptables_save(),
-			),
-		);
-		$Response["firewall"]["html"] = htmlize($Response["firewall"]["raw"]);
 	break;
 
 	case "stop":
