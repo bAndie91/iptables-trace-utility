@@ -24,9 +24,9 @@ Requirements
 					<li>you can setup rsyslog to separate iptables' log messages:<br/>
 					<code>
 					<pre>:msg, regex, "^\[[ ]*[0-9]*\.[0-9]*\] Firewall: "  -/var/log/iptables.log
-& ~
+&amp; ~
 :msg, regex, "^\[[ ]*[0-9]*\.[0-9]*\] TRACE: "     -/var/log/iptables.log
-& ~
+&amp; ~
 </pre>
 					</code>
 					</li>
@@ -58,3 +58,6 @@ Usage
 	
 	<li>Firewall box: iptables-save output hilighting rules with which the selected packet met.</li>
 </ul>
+
+Screenshot
+<img src="http://i.imgur.com/7Jnl7Fi.png" />
