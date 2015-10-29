@@ -1,12 +1,14 @@
 
 Requirements
 <ul>
+	<li><code>modprobe ipt_LOG</code></li>
 	<li><code>sysctl net.netfilter.nf_log.2 = ipt_LOG</code></li>
 	<li>sudoers rules
 		<ul>
 			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables-save ""</code></li>
 			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -F *</code></li>
 			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/iptables -t raw -A * -j TRACE</code></li>
+			<li><code><i>USER</i> ALL=(root) NOPASSWD: /sbin/sysctl net.netfilter.nf_log.2=ipt_LOG</code></li>
 		</ul>
 		Where <code><i>USER</i></code> is unix user running ajax.php script (eg. www-data for apache)
 	</li>
