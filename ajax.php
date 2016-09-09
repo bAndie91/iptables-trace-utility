@@ -247,6 +247,8 @@ switch($_REQUEST['act'])
 					);
 					preg_match('/(?:^|\s)ID=([^0]\d*)/', $match[5], $match_id);
 					$packet_id = $match_id[1];
+					// FIXME
+					if(!$packet_id) $packet_id = "0";
 
 					$packets[$packet_id][] = $map;
 				}

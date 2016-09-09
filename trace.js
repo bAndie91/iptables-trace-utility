@@ -222,10 +222,26 @@
 		newdiv.append('<input type=button value="&ndash;" class="delfilterdiv" onClick="delfilterdiv(' + filterdiv_num + ');" />');
 		lastfilterdiv.parent().append(newdiv);
 	}
-
+	
 	function delfilterdiv(filterdiv_num)
 	{
 		$('.filter_div[filterdiv_num=' + filterdiv_num + ']').remove();
+	}
+	
+	function step_packet(delta)
+	{
+		var obj = $('#packet_list a.hilit');
+		if(delta > 0)
+		{
+			obj = obj.next();
+			if(!obj.length) obj = $('#packet_list a:first');
+		}
+		else if(delta < 0)
+		{
+			obj = obj.prev();
+			if(!obj.length) obj = $('#packet_list a:last');
+		}
+		select_packet( obj.data('pktid') );
 	}
 	
 	$(document).ready(function()
@@ -256,21 +272,17 @@
 		/* setup packet pager */
 		$('body').keypress(function(event)
 		{
-			var obj = $('#packet_list a.hilit');
 			if(event.keyCode == 110 /* [N] */)
 			{
-				obj = obj.next();
-				if(!obj.length) obj = $('#packet_list a:first');
+				step_packet(+1);
 			}
 			else if(event.keyCode == 112 /* [P] */)
 			{
-				obj = obj.prev();
-				if(!obj.length) obj = $('#packet_list a:last');
+				step_packet(-1);
 			}
 			else
 			{
 				return;
 			}
-			select_packet( obj.data('pktid') );
 		});
 	});
