@@ -1,0 +1,4 @@
+some packets have identification field 0 in header, they can not be traced 
+individually.
+a heuristic algorythm is planned to separate log messages of these packets by 
+timestamp.
