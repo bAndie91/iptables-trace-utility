@@ -48,3 +48,6 @@
 ## Screenshot
 
 ![screenshot](http://i.imgur.com/7Jnl7Fi.png)
+
+# issues
+Please submit issues via PR to some file `issue/TITLE.txt`.
