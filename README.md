@@ -49,5 +49,9 @@
 
 ![screenshot](http://i.imgur.com/7Jnl7Fi.png)
 
+# Similar projects
+
+- https://github.com/commonism/iptables-trace
+
 # issues
 Please submit issues via PR to some file `issue/TITLE.txt`.
